@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function dyniva_content_receiver_schema() {
+  $schema['dyniva_content_receiver_request_queue'] = [
+    'description' => 'Request queue',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique ID.'
+      ],
+      'entity_type' => [
+        'description' => 'Entity type id.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ],
+      'bundle' => [
+        'description' => 'Entity bundle.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ],
+      'uuid' => [
+        'description' => 'Entity uuid.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ],
+      'domain' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'recevier site domain'
+      ],
+      'headers' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'headers'
+      ],
+      'status' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => '0:unprocess 1:processed'
+      ],
+      'created' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'created time.'
+      ],
+      'changed' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'changed time.'
+      ]
+    ],
+    'primary key' => [
+      'id'
+    ],
+    'indexes' => [
+      'uuid' => [
+        'uuid'
+      ],
+      'created' => [
+        'created'
+      ],
+      'status' => [
+        'status'
+      ],
+    ]
+  ];
+  return $schema;
+}

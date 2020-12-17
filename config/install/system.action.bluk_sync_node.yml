@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: bluk_sync_node
+label: 'Synchronization to other site'
+type: node
+plugin: bluk_sync_node
+configuration: {  }

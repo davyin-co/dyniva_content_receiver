@@ -1,0 +1,31 @@
+dyniva_content_receiver.post:
+  path: 'content_sync/post.json'
+  defaults: { _controller: '\Drupal\dyniva_content_receiver\Controller\APIController::post' }
+  methods:  [POST]
+  options:
+    _auth: ['basic_auth', 'site_auth', 'agent_site_auth']
+  requirements:
+#    _user_is_logged_in: 'TRUE'
+    _permission: 'allow content sync'
+#    _format: api_json
+    _content_type_format: json
+dyniva_content_receiver.test:
+  path: 'content_sync/test.json'
+  defaults: { _controller: '\Drupal\dyniva_content_receiver\Controller\APIController::test' }
+  methods:  [POST]
+  options:
+    _auth: ['basic_auth', 'site_auth', 'agent_site_auth']
+  requirements:
+#    _access: 'TRUE'
+    _user_is_logged_in: 'TRUE'
+#    _format: json
+    _content_type_format: json
+dyniva_content_receiver.action_form:
+  path: /manage/content-sync-action-form
+  defaults:
+    _title: Bulk Sync
+    _form: \Drupal\dyniva_content_receiver\Form\ActionForm
+  options:
+   _admin_route: TRUE
+  requirements:
+    _permission: 'allow content sync'

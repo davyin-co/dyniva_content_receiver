@@ -1,0 +1,7 @@
+name: Dyniva Content Receiver (Alpha)
+type: module
+description: Dyniva 内容聚合的接收服务
+core: 8.x
+package: Dyniva
+dependencies:
+  - dyniva_content_sync

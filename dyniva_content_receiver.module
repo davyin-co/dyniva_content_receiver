@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * Implements hook_cron().
+ */
+function dyniva_content_receiver_cron(){
+  $queue = \Drupal::service('dyniva_content_receiver.queue');
+  $client = \Drupal::service('dyniva_content_receiver.client');
+  $rows = $queue->getItems(50);
+
+  foreach($rows as $row) {
+    $client->doSyncQueueItem($row->id);
+  }
+}
+
+
+function _dyniva_content_receiver_get_sites()
+{
+  $rows = [];
+  if (\Drupal::moduleHandler()->moduleExists('dyniva_content_hub')) {
+    $nodes = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['type' => 'site']);
+    foreach ($nodes as $node) {
+      $row = [
+        'label' => $node->label(),
+        'url' => $node->domain->value,
+        'uuid' => $node->uuid()
+      ];
+      $rows[$node->uuid()] = $row;
+    }
+  } else {
+    // TODO: 添加配置项并加入到选项中
+    $config = \Drupal::config('dyniva_content_agent.settings');
+    $server_url = $config->get('server_domain');
+    $site_id = $config->get('site_id');
+    $row = [
+      'label' => t('Hub'),
+      'url' => $server_url,
+      'uuid' => $site_id
+    ];
+    $rows[$site_id] = $row;
+  }
+  return $rows;
+}

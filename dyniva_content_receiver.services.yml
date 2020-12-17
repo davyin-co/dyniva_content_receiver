@@ -1,0 +1,6 @@
+services:
+  dyniva_content_receiver.client:
+    class: Drupal\dyniva_content_receiver\Client
+    arguments: ['@entity.manager', '@module_handler']
+  dyniva_content_receiver.queue:
+    class: Drupal\dyniva_content_receiver\Queue
