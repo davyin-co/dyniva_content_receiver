@@ -29,3 +29,10 @@ dyniva_content_receiver.action_form:
    _admin_route: TRUE
   requirements:
     _permission: 'allow content sync'
+dyniva_content_receiver.settings:
+  path: '/admin/config/services/sync_settings'
+  defaults:
+    _title: 'Dyniva sync settings'
+    _form: '\Drupal\dyniva_content_receiver\Form\SyncSettingsForm'
+  requirements:
+    _permission: 'access administration pages'

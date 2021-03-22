@@ -39,13 +39,21 @@ class Client {
     $this->module_handler = $module_handler;
     $this->logger = \Drupal::logger('dyniva_content_receiver');
 
-    if(
-      \Drupal::moduleHandler()->moduleExists('dyniva_content_agent') &&
-      $config = \Drupal::config('dyniva_content_agent.settings')
-    ) {
-      if($skipped_fields = $config->get('skipped_fields')) {
-        $this->skipped_fields = array_map('trim', explode("\n", $skipped_fields));
-      }
+    /**
+     * @deprecated support old agent config module.
+     */
+    $config = FALSE;
+    if(\Drupal::moduleHandler()->moduleExists('dyniva_content_agent') &&
+      $agent_config = \Drupal::config('dyniva_content_agent.settings')) {
+      $config = $agent_config;
+    }
+
+    if (!$config) {
+      $config = \Drupal::config('dyniva_content_receiver.settings');
+    }
+
+    if ($config && $skipped_fields = $config->get('skipped_fields')) {
+      $this->skipped_fields = array_map('trim', explode("\n", $skipped_fields));
     }
   }
 
@@ -64,10 +72,21 @@ class Client {
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
   public function doSyncEntity($server_url, EntityInterface $entity, array $headers = []) {
-    if(
-      \Drupal::moduleHandler()->moduleExists('dyniva_content_agent') &&
-      $config = \Drupal::config('dyniva_content_agent.settings')
-    ) {
+
+    /**
+     * @deprecated support old agent config module.
+     */
+    $config = FALSE;
+    if(\Drupal::moduleHandler()->moduleExists('dyniva_content_agent') &&
+      $agent_config = \Drupal::config('dyniva_content_agent.settings')) {
+      $config = $agent_config;
+    }
+
+    if (!$config) {
+      $config = \Drupal::config('dyniva_content_receiver.settings');
+    }
+
+    if($config) {
       $default_fields = $config->get('default_fields');
       if($default_fields) {
         $default_fields = Yaml::parse($default_fields);
@@ -191,4 +210,18 @@ class Client {
     }
   }
 
+  /**
+   * No batch.
+   *
+   * @param int $batch_limit
+   *
+   * @throws \GuzzleHttp\Exception\GuzzleException
+   */
+  public function doSync($batch_limit = 10) {
+    $queue = \Drupal::service('dyniva_content_receiver.queue');
+    $rows = $queue->getItems($batch_limit);
+    foreach($rows as $row) {
+      $operations[] = $this->doSyncQueueItem($row->id);
+    }
+  }
 }
